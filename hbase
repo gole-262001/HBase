@@ -1,0 +1,144 @@
+[training@localhost ~]$ hbash shell
+bash: hbash: command not found
+[training@localhost ~]$ hbase shell
+23/02/28 16:03:48 WARN conf.Configuration: hadoop.native.lib is deprecated. Instead, use io.native.lib.available
+HBase Shell; enter 'help<RETURN>' for list of supported commands.
+Type "exit<RETURN>" to leave the HBase Shell
+Version 0.92.1-cdh4.1.1, rUnknown, Tue Oct 16 11:44:19 PDT 2012
+
+hbase(main):001:0> create 'user', {NAME => 'info', VERSIONS => 1}
+0 row(s) in 1.4050 seconds
+
+hbase(main):002:0> describe 'user'
+DESCRIPTION                                                                       ENABLED                                    
+ {NAME => 'user', FAMILIES => [{NAME => 'info', BLOOMFILTER => 'NONE', REPLICATIO true                                       
+ N_SCOPE => '0', VERSIONS => '1', COMPRESSION => 'NONE', MIN_VERSIONS => '0', TTL                                            
+  => '2147483647', BLOCKSIZE => '65536', IN_MEMORY => 'false', BLOCKCACHE => 'tru                                            
+ e'}]}                                                                                                                       
+1 row(s) in 0.0270 seconds
+
+hbase(main):003:0> put 'user', '42', 'info:name', 'abhishek'
+0 row(s) in 0.0630 seconds
+
+hbase(main):004:0> scan 'user'
+ROW                              COLUMN+CELL                                                                                 
+ 42                              column=info:name, timestamp=1677619016792, value=abhishek                                   
+1 row(s) in 0.0400 seconds
+
+hbase(main):005:0> put 'user', '43', 'info:name', 'Anil'
+0 row(s) in 0.0070 seconds
+
+hbase(main):006:0> scan 'user'
+ROW                              COLUMN+CELL                                                                                 
+ 42                              column=info:name, timestamp=1677619016792, value=abhishek                                   
+ 43                              column=info:name, timestamp=1677619069261, value=Anil                                       
+2 row(s) in 0.0200 seconds
+
+hbase(main):007:0> put 'user', '43', 'info:name', 'Yogesh', 'info:lname', 'jat'
+
+ERROR: wrong number of arguments (6 for 5)
+
+Here is some help for this command:
+Put a cell 'value' at specified table/row/column and optionally
+timestamp coordinates.  To put a cell value into table 't1' at
+row 'r1' under column 'c1' marked with the time 'ts1', do:
+
+  hbase> put 't1', 'r1', 'c1', 'value', ts1
+
+
+hbase(main):008:0> scan 'user'
+ROW                              COLUMN+CELL                                                                                 
+ 42                              column=info:name, timestamp=1677619016792, value=abhishek                                   
+ 43                              column=info:name, timestamp=1677619069261, value=Anil                                       
+2 row(s) in 0.0190 seconds
+
+hbase(main):009:0> create 'blogs', 'meta', 'body', 'comment'
+0 row(s) in 1.0570 seconds
+
+hbase(main):010:0> list
+TABLE                                                                                                                        
+blogs                                                                                                                        
+user                                                                                                                         
+2 row(s) in 0.0300 seconds
+
+hbase(main):011:0> describe blogs
+NameError: undefined local variable or method `blogs' for #<Object:0xa6aa31>
+
+hbase(main):012:0> describe 'blogs'
+DESCRIPTION                                                                       ENABLED                                    
+ {NAME => 'blogs', FAMILIES => [{NAME => 'body', BLOOMFILTER => 'NONE', REPLICATI true                                       
+ ON_SCOPE => '0', VERSIONS => '3', COMPRESSION => 'NONE', MIN_VERSIONS => '0', TT                                            
+ L => '2147483647', BLOCKSIZE => '65536', IN_MEMORY => 'false', BLOCKCACHE => 'tr                                            
+ ue'}, {NAME => 'comment', BLOOMFILTER => 'NONE', REPLICATION_SCOPE => '0', VERSI                                            
+ ONS => '3', COMPRESSION => 'NONE', MIN_VERSIONS => '0', TTL => '2147483647', BLO                                            
+ CKSIZE => '65536', IN_MEMORY => 'false', BLOCKCACHE => 'true'}, {NAME => 'meta',                                            
+  BLOOMFILTER => 'NONE', REPLICATION_SCOPE => '0', VERSIONS => '3', COMPRESSION =                                            
+ > 'NONE', MIN_VERSIONS => '0', TTL => '2147483647', BLOCKSIZE => '65536', IN_MEM                                            
+ ORY => 'false', BLOCKCACHE => 'true'}]}                                                                                     
+1 row(s) in 0.0430 seconds
+
+hbase(main):013:0> create 'mytable', 'cf'
+0 row(s) in 1.1530 seconds
+
+hbase(main):003:0> scan 'mytable'
+ROW                              COLUMN+CELL                                                                                 
+0 row(s) in 0.0880 seconds
+
+hbase(main):004:0> put 'mytable', 'row1', 'cf:clo', 'foo'
+0 row(s) in 0.0410 seconds
+
+hbase(main):005:0> put 'mytable', 'row1', 'cf:clo', 'bar'
+0 row(s) in 0.0070 seconds
+
+hbase(main):006:0> scan 'mytable'
+ROW                              COLUMN+CELL                                                                                 
+ row1                            column=cf:clo, timestamp=1677620345280, value=bar                                           
+1 row(s) in 0.0240 seconds
+
+hbase(main):007:0> put 'mytable', 'row1', 'cf:clo', 'bar'
+0 row(s) in 0.0120 seconds
+
+hbase(main):008:0> put 'mytable', 'row2', 'cf:clo', 'foo'
+0 row(s) in 0.0170 seconds
+
+hbase(main):009:0> scan 'mytable'
+ROW                              COLUMN+CELL                                                                                 
+ row1                            column=cf:clo, timestamp=1677620366401, value=bar                                           
+ row2                            column=cf:clo, timestamp=1677620379351, value=foo                                           
+2 row(s) in 0.0300 seconds
+
+hbase(main):010:0> flush 'mytable'
+0 row(s) in 0.1760 seconds
+
+hbase(main):011:0> major_compact 'mytable'
+0 row(s) in 0.0600 seconds
+
+
+
+
+////  hadoop terminal 
+
+[training@localhost ~]$ hadoop fs -ls /hbase
+Found 9 items
+drwxr-xr-x   - hbase supergroup          0 2023-02-28 15:38 /hbase/-ROOT-
+drwxr-xr-x   - hbase supergroup          0 2023-02-28 15:38 /hbase/.META.
+drwxr-xr-x   - hbase supergroup          0 2023-02-28 15:38 /hbase/.logs
+drwxr-xr-x   - hbase supergroup          0 2023-02-28 15:38 /hbase/.oldlogs
+drwxr-xr-x   - hbase supergroup          0 2023-02-28 16:20 /hbase/blogs
+-rw-r--r--   1 hbase supergroup         38 2023-02-28 15:38 /hbase/hbase.id
+-rw-r--r--   1 hbase supergroup          3 2023-02-28 15:38 /hbase/hbase.version
+drwxr-xr-x   - hbase supergroup          0 2023-02-28 16:26 /hbase/mytable
+drwxr-xr-x   - hbase supergroup          0 2023-02-28 16:12 /hbase/user
+[training@localhost ~]$ hadoop fs -ls /hbase/mytable
+Found 3 items
+-rw-r--r--   1 hbase supergroup        515 2023-02-28 16:26 /hbase/mytable/.tableinfo.0000000001
+drwxr-xr-x   - hbase supergroup          0 2023-02-28 16:26 /hbase/mytable/.tmp
+drwxr-xr-x   - hbase supergroup          0 2023-02-28 16:39 /hbase/mytable/0ced4895cbd8d945fe2ae3e99b715478
+[training@localhost ~]$ hadoop fs -ls /hbase/mytable/*/cf
+Found 1 items
+-rw-r--r--   1 hbase supergroup        712 2023-02-28 16:40 /hbase/mytable/0ced4895cbd8d945fe2ae3e99b715478/cf/c703a879ddcc46ef94244f2b96fa8bf6
+[training@localhost ~]$ hadoop fs -cat hbase/mytable/0ced4895cbd8d945fe2ae3e99b715478/cf/c703a879ddcc46ef94244f2b96fa8bf6
+cat: `hbase/mytable/0ced4895cbd8d945fe2ae3e99b715478/cf/c703a879ddcc46ef94244f2b96fa8bf6': No such file or directory
+[training@localhost ~]$ hadoop fs -cat hbase/mytable/0ced4895cbd8d945fe2ae3e99b715478/cf/c703a879ddcc46ef94244f2b96fa8bf6
+ 
+
