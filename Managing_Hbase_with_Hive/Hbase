@@ -1,0 +1,84 @@
+[training@localhost ~]$ hbase shell
+23/03/01 07:03:18 WARN conf.Configuration: hadoop.native.lib is deprecated. Instead, use io.native.lib.available
+HBase Shell; enter 'help<RETURN>' for list of supported commands.
+Type "exit<RETURN>" to leave the HBase Shell
+Version 0.92.1-cdh4.1.1, rUnknown, Tue Oct 16 11:44:19 PDT 2012
+
+hbase(main):001:0> list
+TABLE                                                                                                                        
+blogs                                                                                                                        
+hbaseUserRatings                                                                                                             
+mytable                                                                                                                      
+user                                                                                                                         
+4 row(s) in 0.3630 seconds
+
+hbase(main):002:0> create 'hbaserating','cf1'
+0 row(s) in 1.0690 seconds
+
+hbase(main):003:0> put 'hbaserating' 'row1' 'cf1:movieid','42'
+
+ERROR: wrong number of arguments (2 for 4)
+
+Here is some help for this command:
+Put a cell 'value' at specified table/row/column and optionally
+timestamp coordinates.  To put a cell value into table 't1' at
+row 'r1' under column 'c1' marked with the time 'ts1', do:
+
+  hbase> put 't1', 'r1', 'c1', 'value', ts1
+
+
+hbase(main):004:0> put 'hbaserating', 'row1', 'cf1:movieid','42'
+0 row(s) in 0.0560 seconds
+
+hbase(main):005:0> put 'hbaserating', 'row2', 'cf1:rating','5'
+0 row(s) in 0.0050 seconds
+
+hbase(main):006:0> put 'hbaserating', 'row3', 'cf1:rating','21'
+0 row(s) in 0.0070 seconds
+
+hbase(main):007:0> put 'hbaserating', 'row4', 'cf1:movieid','32'
+0 row(s) in 0.0080 seconds
+
+hbase(main):008:0> scan 'habserating'
+ROW                              COLUMN+CELL                                                                                 
+
+ERROR: Unknown table habserating!
+
+Here is some help for this command:
+Scan a table; pass table name and optionally a dictionary of scanner
+specifications.  Scanner specifications may include one or more of:
+TIMERANGE, FILTER, LIMIT, STARTROW, STOPROW, TIMESTAMP, MAXLENGTH,
+or COLUMNS, CACHE
+
+If no columns are specified, all columns will be scanned.
+To scan all members of a column family, leave the qualifier empty as in
+'col_family:'.
+
+The filter can be specified in two ways:
+1. Using a filterString - more information on this is available in the
+Filter Language document attached to the HBASE-4176 JIRA
+2. Using the entire package name of the filter.
+
+Some examples:
+hbase> scan '.META.'
+  hbase> scan '.META.', {COLUMNS => 'info:regioninfo'}
+  hbase> scan 't1', {COLUMNS => ['c1', 'c2'], LIMIT => 10, STARTROW => 'xyz'}
+  hbase> scan 't1', {COLUMNS => 'c1', TIMERANGE => [1303668804, 1303668904]}
+  hbase> scan 't1', {FILTER => "(PrefixFilter ('row2') AND (QualifierFilter (>=, 'binary:xyz'))) AND (TimestampsFilter ( 123, 456))"}
+  hbase> scan 't1', {FILTER => org.apache.hadoop.hbase.filter.ColumnPaginationFilter.new(1, 0)}
+
+For experts, there is an additional option -- CACHE_BLOCKS -- which
+switches block caching for the scanner on (true) or off (false).  By
+default it is enabled.  Examples:
+
+  hbase> scan 't1', {COLUMNS => ['c1', 'c2'], CACHE_BLOCKS => false}
+
+
+hbase(main):009:0> scan 'hbaserating'
+ROW                              COLUMN+CELL                                                                                 
+ row1                            column=cf1:movieid, timestamp=1677672368509, value=42                                       
+ row2                            column=cf1:rating, timestamp=1677672391124, value=5                                         
+ row3                            column=cf1:rating, timestamp=1677672405655, value=21                                        
+ row4                            column=cf1:movieid, timestamp=1677672447014, value=32                                       
+4 row(s) in 0.0330 seconds
+
