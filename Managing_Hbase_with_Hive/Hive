@@ -1,0 +1,18 @@
+[training@localhost ~]$ hive
+Logging initialized using configuration in file:/etc/hive/conf.dist/hive-log4j.properties
+Hive history file=/tmp/training/hive_job_log_training_202303010709_1620151027.txt
+hive> org.apache.hadoop.hive.hbase.HBaseStoregeHandler' with serdeproperties ("h                                                                                add jar /usr/lib/hbase/hbase.jar;                                         
+Added /usr/lib/hbase/hbase.jar to class path
+Added resource: /usr/lib/hbase/hbase.jar
+hive> create external table hbaserating (userid int,movieid int,rating int) stored by 
+    > 'org.apache.hadoop.hive.hbase.HBaseStorageHandler' with serdeproperties ("hbase.columns.mapping"=":key,cf1:movieid,cf1:rating") tblproperties ("hbase.table.name"= "hbaserating");
+OK
+Time taken: 2.7 seconds
+hive> select * from hbaserating;
+OK
+NULL	42	NULL
+NULL	NULL	5
+NULL	NULL	21
+NULL	32	NULL
+Time taken: 0.33 seconds
+hive> 
